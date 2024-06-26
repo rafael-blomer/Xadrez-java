@@ -1,6 +1,5 @@
 package chess;
 
-import boardgame.Posicao;
 import boardgame.Tabuleiro;
 import chess.pieces.King;
 import chess.pieces.Rook;
@@ -28,8 +27,18 @@ public class PartidaXadrez {
 	}
 
 	private void setupInicial() {
-		placeNewPiece('b', 6 ,new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('e', 8, new King(tabuleiro, Cor.BLACK));
-		placeNewPiece('e', 1,new King(tabuleiro, Cor.WHITE));
+		placeNewPiece('c', 1 ,new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('c', 2 ,new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('d', 2 ,new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('e', 2 ,new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('e', 1 ,new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('d', 1,new King(tabuleiro, Cor.WHITE));
+		
+		placeNewPiece('d', 8, new King(tabuleiro, Cor.BLACK));
+		placeNewPiece('c', 7 ,new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('c', 8 ,new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('d', 7 ,new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('e', 8 ,new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('e', 7 ,new Rook(tabuleiro, Cor.BLACK));
 	}
 }

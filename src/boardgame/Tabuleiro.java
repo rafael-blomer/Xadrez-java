@@ -39,6 +39,17 @@ public class Tabuleiro {
 		pecas[posicao.getRow()][posicao.getColumn()] = peca;
 		peca.position = posicao;
 	}
+	
+	public Peca removerPeca(Posicao posicao) {
+		if (!positionExists(posicao))
+			throw new BoardException("Position not on the board.");
+		if (peca(posicao) == null) 
+			return null;
+		Peca aux = peca(posicao);
+		aux.position = null;
+		pecas[posicao.getRow()][posicao.getColumn()] = null;
+		return aux;
+	}
 
 	private boolean positionExists(int row, int column) {
 		return row >= 0 && row < rows && column >= 0 && column < columns;

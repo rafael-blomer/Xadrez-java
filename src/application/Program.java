@@ -22,6 +22,10 @@ public class Program {
 				System.out.println();
 				System.out.print("Source: ");
 				PosicaoXadrez source = UI.readChessPosition(sc);
+				
+				boolean[][] possibleMoves = chessmatch.possibleMoves(source);
+				UI.clearScreen();
+				UI.printBoard(chessmatch.getPecas(), possibleMoves);
 
 				System.out.println();
 				System.out.print("Target: ");

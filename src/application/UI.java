@@ -32,42 +32,53 @@ public class UI {
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
 	}
-	
+
 	public static PosicaoXadrez readChessPosition(Scanner sc) {
 		try {
 			String s = sc.nextLine();
-		char column = s.charAt(0);
-		int row = Integer.parseInt(s.substring(1));
-		return new PosicaoXadrez(column, row);
-		}
-		catch (RuntimeException e) {
+			char column = s.charAt(0);
+			int row = Integer.parseInt(s.substring(1));
+			return new PosicaoXadrez(column, row);
+		} catch (RuntimeException e) {
 			throw new InputMismatchException("Error reading ChessPosition. Valid values are from a1 to h8.");
 		}
 	}
-	
+
 	public static void printBoard(PecaXadrez[][] pecas) {
 		for (int i = 0; i < pecas.length; i++) {
 			System.out.print((8 - i) + " ");
 			for (int j = 0; j < pecas.length; j++) {
-				printPiece(pecas[i][j]);
+				printPiece(pecas[i][j], false);
 			}
 			System.out.println();
 		}
 		System.out.println("  a b c d e f g h");
 	}
 
-	private static void printPiece(PecaXadrez peca) {
+	private static void printPiece(PecaXadrez peca, boolean background) {
+		if (background)
+			System.out.print(ANSI_BLUE_BACKGROUND);
 		if (peca == null) {
-            System.out.print("-");
-        }
-        else {
-            if (peca.getCor() == Cor.WHITE) {
-                System.out.print(ANSI_WHITE + peca + ANSI_RESET);
-            }
-            else {
-                System.out.print(ANSI_YELLOW + peca + ANSI_RESET);
-            }
-        }
-        System.out.print(" ");
+			System.out.print("-" + ANSI_RESET);
+		} else {
+			if (peca.getCor() == Cor.WHITE) {
+				System.out.print(ANSI_WHITE + peca + ANSI_RESET);
+			} else {
+				System.out.print(ANSI_YELLOW + peca + ANSI_RESET);
+			}
+		}
+		System.out.print(" ");
 	}
+
+	public static void printBoard(PecaXadrez[][] pecas, boolean[][] possibleMoves) {
+		for (int i = 0; i < pecas.length; i++) {
+			System.out.print((8 - i) + " ");
+			for (int j = 0; j < pecas.length; j++) {
+				printPiece(pecas[i][j], possibleMoves[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println("  a b c d e f g h");
+	}
+
 }

@@ -28,6 +28,7 @@ public class PartidaXadrez {
 		Posicao source = sourcePosition.toPosition();
 		Posicao target = targetPosition.toPosition();
 		validateSourcePosition(source);
+		validateTargetPosition(source, target);
 		Peca capturedPiece = makeMove(source, target);
 		return (PecaXadrez) capturedPiece;
 	}
@@ -42,6 +43,13 @@ public class PartidaXadrez {
 	private void validateSourcePosition(Posicao position) {
 		if (!tabuleiro.thereIsAPiece(position))
 			throw new ChessException("There is no piece on source position.");
+		if (!tabuleiro.peca(position).isThereAnyPossibleMove())
+			throw new ChessException("There is no possible moves for chosen piece.");
+	}
+	
+	private void validateTargetPosition(Posicao source, Posicao target) {
+		if (!tabuleiro.peca(source).possibleMove(target))
+			throw new ChessException("The chosen piece can't move to target position.");
 	}
 	
 	private void placeNewPiece(char column, int row, PecaXadrez piece) {

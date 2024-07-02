@@ -55,6 +55,8 @@ public class UI {
 		System.out.println();
 		System.out.println("Turn: " + px.getTurn());
 		System.out.println("Waiting player: " + px.getCurrentPlayer());
+		if (px.GetCheck())
+			System.out.println("CHECK!");
 	}
 	
 	public static void printBoard(PecaXadrez[][] pecas) {

@@ -7,11 +7,23 @@ import chess.pieces.King;
 import chess.pieces.Rook;
 
 public class PartidaXadrez {
+	private int turn;
+	private Cor currentPlayer;
 	private Tabuleiro tabuleiro;
 
 	public PartidaXadrez() {
 		tabuleiro = new Tabuleiro(8, 8);
+		turn = 1;
+		currentPlayer = Cor.WHITE;
 		setupInicial();
+	}
+
+	public int getTurn() {
+		return turn;
+	}
+
+	public Cor getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 	public PecaXadrez[][] getPecas() {
@@ -23,7 +35,7 @@ public class PartidaXadrez {
 		}
 		return mat;
 	}
-	
+
 	public boolean[][] possibleMoves(PosicaoXadrez sourcePosition) {
 		Posicao posicao = sourcePosition.toPosition();
 		validateSourcePosition(posicao);
@@ -36,26 +48,34 @@ public class PartidaXadrez {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Peca capturedPiece = makeMove(source, target);
+		nextTurn();
 		return (PecaXadrez) capturedPiece;
 	}
-	
+
 	private Peca makeMove(Posicao source, Posicao target) {
 		Peca p = tabuleiro.removerPeca(source);
 		Peca capturedPiece = tabuleiro.removerPeca(target);
 		tabuleiro.colocarPeca(p, target);
 		return capturedPiece;
 	}
-	
+
 	private void validateSourcePosition(Posicao position) {
 		if (!tabuleiro.thereIsAPiece(position))
 			throw new ChessException("There is no piece on source position.");
+		if (currentPlayer != ((PecaXadrez)tabuleiro.peca(position)).getCor())
+			throw new ChessException("The chosen piece is not yours");
 		if (!tabuleiro.peca(position).isThereAnyPossibleMove())
 			throw new ChessException("There is no possible moves for chosen piece.");
 	}
-	
+
 	private void validateTargetPosition(Posicao source, Posicao target) {
 		if (!tabuleiro.peca(source).possibleMove(target))
 			throw new ChessException("The chosen piece can't move to target position.");
+	}
+
+	private void nextTurn() {
+		turn++;
+		currentPlayer = (currentPlayer == Cor.WHITE) ? Cor.BLACK : Cor.WHITE;
 	}
 	
 	private void placeNewPiece(char column, int row, PecaXadrez piece) {
@@ -63,18 +83,18 @@ public class PartidaXadrez {
 	}
 
 	private void setupInicial() {
-		placeNewPiece('c', 1 ,new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('c', 2 ,new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('d', 2 ,new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('e', 2 ,new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('e', 1 ,new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('d', 1,new King(tabuleiro, Cor.WHITE));
-		
+		placeNewPiece('c', 1, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('c', 2, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('d', 2, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('e', 2, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('e', 1, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('d', 1, new King(tabuleiro, Cor.WHITE));
+
 		placeNewPiece('d', 8, new King(tabuleiro, Cor.BLACK));
-		placeNewPiece('c', 7 ,new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('c', 8 ,new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('d', 7 ,new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('e', 8 ,new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('e', 7 ,new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('c', 7, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('c', 8, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('d', 7, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('e', 8, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('e', 7, new Rook(tabuleiro, Cor.BLACK));
 	}
 }

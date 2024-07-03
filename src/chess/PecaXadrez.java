@@ -6,6 +6,7 @@ import boardgame.Tabuleiro;
 
 public abstract class PecaXadrez extends Peca {
 	private Cor cor;
+	private int moveCount;
 	
 	public PecaXadrez(Tabuleiro board, Cor cor) {
 		super(board);
@@ -14,6 +15,18 @@ public abstract class PecaXadrez extends Peca {
 
 	public Cor getCor() {
 		return cor;
+	}
+	
+	public int increaseMoveCount() {
+		return moveCount++;
+	}
+	
+	public int decreaseMoveCount() {
+		return moveCount--;
+	}
+	
+	public int getMoveCount() {
+		return moveCount;
 	}
 	
 	protected boolean isThereOpponentPiece(Posicao posicao) {

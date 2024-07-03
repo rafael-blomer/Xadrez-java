@@ -72,16 +72,17 @@ public class PartidaXadrez {
 
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
 
-		if(testCheckMate(opponent(currentPlayer))) 
+		if (testCheckMate(opponent(currentPlayer)))
 			checkMate = true;
-		else 
+		else
 			nextTurn();
-		
+
 		return (PecaXadrez) capturedPiece;
 	}
 
 	private Peca makeMove(Posicao source, Posicao target) {
-		Peca p = tabuleiro.removerPeca(source);
+		PecaXadrez p = (PecaXadrez) tabuleiro.removerPeca(source);
+		p.increaseMoveCount();
 		Peca capturedPiece = tabuleiro.removerPeca(target);
 		tabuleiro.colocarPeca(p, target);
 
@@ -89,11 +90,13 @@ public class PartidaXadrez {
 			piecesOnTheBoard.remove(capturedPiece);
 			capturedPieces.add(capturedPiece);
 		}
+
 		return capturedPiece;
 	}
 
 	private void undoMove(Posicao source, Posicao target, Peca capturedPiece) {
-		Peca p = tabuleiro.removerPeca(target);
+		PecaXadrez p = (PecaXadrez)tabuleiro.removerPeca(target);
+		p.decreaseMoveCount();
 		tabuleiro.colocarPeca(p, source);
 
 		if (capturedPiece != null) {
@@ -159,7 +162,7 @@ public class PartidaXadrez {
 			for (int i = 0; i < tabuleiro.getRows(); i++) {
 				for (int j = 0; j < tabuleiro.getRows(); j++) {
 					if (mat[i][j]) {
-						Posicao source = ((PecaXadrez)p).getPosicao().toPosition();
+						Posicao source = ((PecaXadrez) p).getPosicao().toPosition();
 						Posicao target = new Posicao(i, j);
 						Peca capturedPiece = makeMove(source, target);
 						boolean testCheck = testCheck(cor);

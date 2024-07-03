@@ -14,7 +14,7 @@ public class PartidaXadrez {
 	private int turn;
 	private Cor currentPlayer;
 	private Tabuleiro tabuleiro;
-	private boolean check;
+	private boolean check, checkMate;
 
 	private List<Peca> piecesOnTheBoard = new ArrayList<>();
 	private List<Peca> capturedPieces = new ArrayList<>();
@@ -34,10 +34,14 @@ public class PartidaXadrez {
 		return currentPlayer;
 	}
 
-	public boolean GetCheck() {
+	public boolean getCheck() {
 		return check;
 	}
-	
+
+	public boolean getCheckMate() {
+		return checkMate;
+	}
+
 	public PecaXadrez[][] getPecas() {
 		PecaXadrez[][] mat = new PecaXadrez[tabuleiro.getRows()][tabuleiro.getColumns()];
 		for (int i = 0; i < tabuleiro.getRows(); i++) {
@@ -60,15 +64,19 @@ public class PartidaXadrez {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Peca capturedPiece = makeMove(source, target);
-		
+
 		if (testCheck(currentPlayer)) {
 			undoMove(source, target, capturedPiece);
 			throw new ChessException("You can't put yourself in check.");
 		}
-		
+
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
+
+		if(testCheckMate(opponent(currentPlayer))) 
+			checkMate = true;
+		else 
+			nextTurn();
 		
-		nextTurn();
 		return (PecaXadrez) capturedPiece;
 	}
 
@@ -83,11 +91,11 @@ public class PartidaXadrez {
 		}
 		return capturedPiece;
 	}
-	
+
 	private void undoMove(Posicao source, Posicao target, Peca capturedPiece) {
 		Peca p = tabuleiro.removerPeca(target);
 		tabuleiro.colocarPeca(p, source);
-		
+
 		if (capturedPiece != null) {
 			tabuleiro.colocarPeca(capturedPiece, target);
 			capturedPieces.remove(capturedPiece);
@@ -113,49 +121,70 @@ public class PartidaXadrez {
 		turn++;
 		currentPlayer = (currentPlayer == Cor.WHITE) ? Cor.BLACK : Cor.WHITE;
 	}
-	
+
 	private Cor opponent(Cor cor) {
 		return (cor == cor.WHITE) ? cor.BLACK : cor.WHITE;
 	}
 
 	private PecaXadrez king(Cor cor) {
-		List<Peca> list = piecesOnTheBoard.stream().filter(x -> ((PecaXadrez)x).getCor() == cor).collect(Collectors.toList());
+		List<Peca> list = piecesOnTheBoard.stream().filter(x -> ((PecaXadrez) x).getCor() == cor)
+				.collect(Collectors.toList());
 		for (Peca p : list) {
-			if(p instanceof King)
-				return (PecaXadrez)p;
+			if (p instanceof King)
+				return (PecaXadrez) p;
 		}
 		throw new IllegalStateException("There is no " + cor + " king on the board.");
 	}
-	
+
 	private boolean testCheck(Cor cor) {
 		Posicao kingPosition = king(cor).getPosicao().toPosition();
-		List<Peca> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((PecaXadrez)x).getCor() == opponent(cor)).collect(Collectors.toList());
+		List<Peca> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((PecaXadrez) x).getCor() == opponent(cor))
+				.collect(Collectors.toList());
 		for (Peca p : opponentPieces) {
 			boolean[][] mat = p.possibleMoves();
-			if ( mat[kingPosition.getRow()][kingPosition.getColumn()])
+			if (mat[kingPosition.getRow()][kingPosition.getColumn()])
 				return true;
 		}
 		return false;
 	}
-	
+
+	private boolean testCheckMate(Cor cor) {
+		if (!testCheck(cor))
+			return false;
+
+		List<Peca> list = piecesOnTheBoard.stream().filter(x -> ((PecaXadrez) x).getCor() == cor)
+				.collect(Collectors.toList());
+		for (Peca p : list) {
+			boolean[][] mat = p.possibleMoves();
+			for (int i = 0; i < tabuleiro.getRows(); i++) {
+				for (int j = 0; j < tabuleiro.getRows(); j++) {
+					if (mat[i][j]) {
+						Posicao source = ((PecaXadrez)p).getPosicao().toPosition();
+						Posicao target = new Posicao(i, j);
+						Peca capturedPiece = makeMove(source, target);
+						boolean testCheck = testCheck(cor);
+						undoMove(source, target, capturedPiece);
+						if (!testCheck) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	private void placeNewPiece(char column, int row, PecaXadrez piece) {
 		tabuleiro.colocarPeca(piece, new PosicaoXadrez(column, row).toPosition());
 		piecesOnTheBoard.add(piece);
 	}
 
 	private void setupInicial() {
-		placeNewPiece('c', 1, new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('c', 2, new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('d', 2, new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('e', 2, new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('e', 1, new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('d', 1, new King(tabuleiro, Cor.WHITE));
+		placeNewPiece('h', 7, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('d', 1, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('e', 1, new King(tabuleiro, Cor.WHITE));
 
-		placeNewPiece('d', 8, new King(tabuleiro, Cor.BLACK));
-		placeNewPiece('c', 7, new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('c', 8, new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('d', 7, new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('e', 8, new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('e', 7, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('b', 8, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('a', 8, new King(tabuleiro, Cor.BLACK));
 	}
 }

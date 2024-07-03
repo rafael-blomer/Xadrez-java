@@ -54,9 +54,15 @@ public class UI {
 		printCapturedPieces(captured);
 		System.out.println();
 		System.out.println("Turn: " + px.getTurn());
-		System.out.println("Waiting player: " + px.getCurrentPlayer());
-		if (px.GetCheck())
-			System.out.println("CHECK!");
+		if(!px.getCheckMate()) {
+			System.out.println("Waiting player: " + px.getCurrentPlayer());
+			if (px.getCheck())
+				System.out.println("CHECK!");
+		}
+		else {
+			System.out.println("CHECKMATE!");
+			System.out.println("Winner: " + px.getCurrentPlayer());
+		}
 	}
 	
 	public static void printBoard(PecaXadrez[][] pecas) {

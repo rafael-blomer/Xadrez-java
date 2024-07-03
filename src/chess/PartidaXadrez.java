@@ -8,6 +8,7 @@ import boardgame.Peca;
 import boardgame.Posicao;
 import boardgame.Tabuleiro;
 import chess.pieces.King;
+import chess.pieces.Pawn;
 import chess.pieces.Rook;
 
 public class PartidaXadrez {
@@ -183,11 +184,28 @@ public class PartidaXadrez {
 	}
 
 	private void setupInicial() {
-		placeNewPiece('h', 7, new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('d', 1, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('a', 1, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('h', 1, new Rook(tabuleiro, Cor.WHITE));
 		placeNewPiece('e', 1, new King(tabuleiro, Cor.WHITE));
+		placeNewPiece('a', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('b', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('c', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('d', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('e', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('f', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('g', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('h', 2, new Pawn(tabuleiro, Cor.WHITE));
 
-		placeNewPiece('b', 8, new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('a', 8, new King(tabuleiro, Cor.BLACK));
+		placeNewPiece('a', 8, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('h', 8, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('e', 8, new King(tabuleiro, Cor.BLACK));
+		placeNewPiece('a', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('b', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('c', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('d', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('e', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('f', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('g', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('h', 7, new Pawn(tabuleiro, Cor.BLACK));
 	}
 }

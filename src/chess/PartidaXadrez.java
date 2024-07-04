@@ -95,11 +95,27 @@ public class PartidaXadrez {
 			capturedPieces.add(capturedPiece);
 		}
 
+		// castling
+		if (p instanceof King && target.getColumn() == source.getColumn() + 2) {
+			Posicao sourceT = new Posicao(source.getRow(), source.getColumn() + 3);
+			Posicao targetT = new Posicao(source.getRow(), source.getColumn() + 1);
+			PecaXadrez rook = (PecaXadrez) tabuleiro.removerPeca(sourceT);
+			tabuleiro.colocarPeca(rook, targetT);
+			rook.increaseMoveCount();
+		}
+		if (p instanceof King && target.getColumn() == source.getColumn() - 2) {
+			Posicao sourceT = new Posicao(source.getRow(), source.getColumn() - 4);
+			Posicao targetT = new Posicao(source.getRow(), source.getColumn() - 1);
+			PecaXadrez rook = (PecaXadrez) tabuleiro.removerPeca(sourceT);
+			tabuleiro.colocarPeca(rook, targetT);
+			rook.increaseMoveCount();
+		}
+
 		return capturedPiece;
 	}
 
 	private void undoMove(Posicao source, Posicao target, Peca capturedPiece) {
-		PecaXadrez p = (PecaXadrez)tabuleiro.removerPeca(target);
+		PecaXadrez p = (PecaXadrez) tabuleiro.removerPeca(target);
 		p.decreaseMoveCount();
 		tabuleiro.colocarPeca(p, source);
 
@@ -107,6 +123,22 @@ public class PartidaXadrez {
 			tabuleiro.colocarPeca(capturedPiece, target);
 			capturedPieces.remove(capturedPiece);
 			piecesOnTheBoard.add(capturedPiece);
+		}
+
+		// castling
+		if (p instanceof King && target.getColumn() == source.getColumn() + 2) {
+			Posicao sourceT = new Posicao(source.getRow(), source.getColumn() + 3);
+			Posicao targetT = new Posicao(source.getRow(), source.getColumn() + 1);
+			PecaXadrez rook = (PecaXadrez) tabuleiro.removerPeca(targetT);
+			tabuleiro.colocarPeca(rook, sourceT);
+			rook.decreaseMoveCount();
+		}
+		if (p instanceof King && target.getColumn() == source.getColumn() - 2) {
+			Posicao sourceT = new Posicao(source.getRow(), source.getColumn() - 4);
+			Posicao targetT = new Posicao(source.getRow(), source.getColumn() - 1);
+			PecaXadrez rook = (PecaXadrez) tabuleiro.removerPeca(targetT);
+			tabuleiro.colocarPeca(rook, sourceT);
+			rook.decreaseMoveCount();
 		}
 	}
 
@@ -194,7 +226,7 @@ public class PartidaXadrez {
 		placeNewPiece('f', 1, new Bishop(tabuleiro, Cor.WHITE));
 		placeNewPiece('g', 1, new Knight(tabuleiro, Cor.WHITE));
 		placeNewPiece('h', 1, new Rook(tabuleiro, Cor.WHITE));
-		placeNewPiece('e', 1, new King(tabuleiro, Cor.WHITE));
+		placeNewPiece('e', 1, new King(tabuleiro, Cor.WHITE, this));
 		placeNewPiece('a', 2, new Pawn(tabuleiro, Cor.WHITE));
 		placeNewPiece('b', 2, new Pawn(tabuleiro, Cor.WHITE));
 		placeNewPiece('c', 2, new Pawn(tabuleiro, Cor.WHITE));
@@ -211,7 +243,7 @@ public class PartidaXadrez {
 		placeNewPiece('d', 8, new Queen(tabuleiro, Cor.BLACK));
 		placeNewPiece('f', 8, new Bishop(tabuleiro, Cor.BLACK));
 		placeNewPiece('h', 8, new Rook(tabuleiro, Cor.BLACK));
-		placeNewPiece('e', 8, new King(tabuleiro, Cor.BLACK));
+		placeNewPiece('e', 8, new King(tabuleiro, Cor.BLACK, this));
 		placeNewPiece('a', 7, new Pawn(tabuleiro, Cor.BLACK));
 		placeNewPiece('b', 7, new Pawn(tabuleiro, Cor.BLACK));
 		placeNewPiece('c', 7, new Pawn(tabuleiro, Cor.BLACK));

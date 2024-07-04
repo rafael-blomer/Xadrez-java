@@ -11,6 +11,7 @@ import chess.pieces.Bishop;
 import chess.pieces.King;
 import chess.pieces.Knight;
 import chess.pieces.Pawn;
+import chess.pieces.Queen;
 import chess.pieces.Rook;
 
 public class PartidaXadrez {
@@ -189,6 +190,7 @@ public class PartidaXadrez {
 		placeNewPiece('a', 1, new Rook(tabuleiro, Cor.WHITE));
 		placeNewPiece('b', 1, new Knight(tabuleiro, Cor.WHITE));
 		placeNewPiece('c', 1, new Bishop(tabuleiro, Cor.WHITE));
+		placeNewPiece('d', 1, new Queen(tabuleiro, Cor.WHITE));
 		placeNewPiece('f', 1, new Bishop(tabuleiro, Cor.WHITE));
 		placeNewPiece('g', 1, new Knight(tabuleiro, Cor.WHITE));
 		placeNewPiece('h', 1, new Rook(tabuleiro, Cor.WHITE));
@@ -206,6 +208,7 @@ public class PartidaXadrez {
 		placeNewPiece('b', 8, new Knight(tabuleiro, Cor.BLACK));
 		placeNewPiece('g', 8, new Knight(tabuleiro, Cor.BLACK));
 		placeNewPiece('c', 8, new Bishop(tabuleiro, Cor.BLACK));
+		placeNewPiece('d', 8, new Queen(tabuleiro, Cor.BLACK));
 		placeNewPiece('f', 8, new Bishop(tabuleiro, Cor.BLACK));
 		placeNewPiece('h', 8, new Rook(tabuleiro, Cor.BLACK));
 		placeNewPiece('e', 8, new King(tabuleiro, Cor.BLACK));

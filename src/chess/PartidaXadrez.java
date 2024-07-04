@@ -9,6 +9,7 @@ import boardgame.Posicao;
 import boardgame.Tabuleiro;
 import chess.pieces.Bishop;
 import chess.pieces.King;
+import chess.pieces.Knight;
 import chess.pieces.Pawn;
 import chess.pieces.Rook;
 
@@ -186,8 +187,10 @@ public class PartidaXadrez {
 
 	private void setupInicial() {
 		placeNewPiece('a', 1, new Rook(tabuleiro, Cor.WHITE));
+		placeNewPiece('b', 1, new Knight(tabuleiro, Cor.WHITE));
 		placeNewPiece('c', 1, new Bishop(tabuleiro, Cor.WHITE));
 		placeNewPiece('f', 1, new Bishop(tabuleiro, Cor.WHITE));
+		placeNewPiece('g', 1, new Knight(tabuleiro, Cor.WHITE));
 		placeNewPiece('h', 1, new Rook(tabuleiro, Cor.WHITE));
 		placeNewPiece('e', 1, new King(tabuleiro, Cor.WHITE));
 		placeNewPiece('a', 2, new Pawn(tabuleiro, Cor.WHITE));
@@ -200,6 +203,8 @@ public class PartidaXadrez {
 		placeNewPiece('h', 2, new Pawn(tabuleiro, Cor.WHITE));
 
 		placeNewPiece('a', 8, new Rook(tabuleiro, Cor.BLACK));
+		placeNewPiece('b', 8, new Knight(tabuleiro, Cor.BLACK));
+		placeNewPiece('g', 8, new Knight(tabuleiro, Cor.BLACK));
 		placeNewPiece('c', 8, new Bishop(tabuleiro, Cor.BLACK));
 		placeNewPiece('f', 8, new Bishop(tabuleiro, Cor.BLACK));
 		placeNewPiece('h', 8, new Rook(tabuleiro, Cor.BLACK));

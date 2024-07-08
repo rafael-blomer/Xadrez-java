@@ -19,6 +19,7 @@ public class PartidaXadrez {
 	private Cor currentPlayer;
 	private Tabuleiro tabuleiro;
 	private boolean check, checkMate;
+	private PecaXadrez enPassantVulnerable;
 
 	private List<Peca> piecesOnTheBoard = new ArrayList<>();
 	private List<Peca> capturedPieces = new ArrayList<>();
@@ -44,6 +45,10 @@ public class PartidaXadrez {
 
 	public boolean getCheckMate() {
 		return checkMate;
+	}
+
+	public PecaXadrez getEnPassantVulnerable() {
+		return enPassantVulnerable;
 	}
 
 	public PecaXadrez[][] getPecas() {
@@ -74,12 +79,21 @@ public class PartidaXadrez {
 			throw new ChessException("You can't put yourself in check.");
 		}
 
+		PecaXadrez movedPiece = (PecaXadrez) tabuleiro.peca(target);
+
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
 
 		if (testCheckMate(opponent(currentPlayer)))
 			checkMate = true;
 		else
 			nextTurn();
+
+		// En Passant
+		if (movedPiece instanceof Pawn && (target.getRow()) == source.getRow() - 2
+				|| (target.getRow()) == source.getRow() + 2)
+			enPassantVulnerable = movedPiece;
+		else
+			enPassantVulnerable = null;
 
 		return (PecaXadrez) capturedPiece;
 	}
@@ -111,6 +125,21 @@ public class PartidaXadrez {
 			rook.increaseMoveCount();
 		}
 
+		// En Passant
+		if (p instanceof Pawn) {
+			if (source.getColumn() != target.getColumn() && capturedPiece == null) {
+				Posicao pawnPosition;
+				if (p.getCor() == Cor.WHITE)
+					pawnPosition = new Posicao(target.getRow() + 1, target.getColumn());
+				else
+					pawnPosition = new Posicao(target.getRow() - 1, target.getColumn());
+
+				capturedPiece = tabuleiro.removerPeca(pawnPosition);
+				capturedPieces.add(capturedPiece);
+				piecesOnTheBoard.remove(capturedPiece);
+			}
+		}
+
 		return capturedPiece;
 	}
 
@@ -140,6 +169,20 @@ public class PartidaXadrez {
 			tabuleiro.colocarPeca(rook, sourceT);
 			rook.decreaseMoveCount();
 		}
+
+		// En Passant
+		if (p instanceof Pawn) {
+			if (source.getColumn() != target.getColumn() && capturedPiece == enPassantVulnerable) {
+				PecaXadrez pawn = (PecaXadrez)tabuleiro.removerPeca(target);
+				Posicao pawnPosition;
+				if (p.getCor() == Cor.WHITE)
+					pawnPosition = new Posicao(3, target.getColumn());
+				else
+					pawnPosition = new Posicao(4, target.getColumn());
+
+				tabuleiro.colocarPeca(pawn, pawnPosition);
+			}
+		}
 	}
 
 	private void validateSourcePosition(Posicao position) {
@@ -162,7 +205,7 @@ public class PartidaXadrez {
 	}
 
 	private Cor opponent(Cor cor) {
-		return (cor == cor.WHITE) ? cor.BLACK : cor.WHITE;
+		return (cor == Cor.WHITE) ? Cor.BLACK : Cor.WHITE;
 	}
 
 	private PecaXadrez king(Cor cor) {
@@ -227,14 +270,14 @@ public class PartidaXadrez {
 		placeNewPiece('g', 1, new Knight(tabuleiro, Cor.WHITE));
 		placeNewPiece('h', 1, new Rook(tabuleiro, Cor.WHITE));
 		placeNewPiece('e', 1, new King(tabuleiro, Cor.WHITE, this));
-		placeNewPiece('a', 2, new Pawn(tabuleiro, Cor.WHITE));
-		placeNewPiece('b', 2, new Pawn(tabuleiro, Cor.WHITE));
-		placeNewPiece('c', 2, new Pawn(tabuleiro, Cor.WHITE));
-		placeNewPiece('d', 2, new Pawn(tabuleiro, Cor.WHITE));
-		placeNewPiece('e', 2, new Pawn(tabuleiro, Cor.WHITE));
-		placeNewPiece('f', 2, new Pawn(tabuleiro, Cor.WHITE));
-		placeNewPiece('g', 2, new Pawn(tabuleiro, Cor.WHITE));
-		placeNewPiece('h', 2, new Pawn(tabuleiro, Cor.WHITE));
+		placeNewPiece('a', 2, new Pawn(tabuleiro, Cor.WHITE, this));
+		placeNewPiece('b', 2, new Pawn(tabuleiro, Cor.WHITE, this));
+		placeNewPiece('c', 2, new Pawn(tabuleiro, Cor.WHITE, this));
+		placeNewPiece('d', 2, new Pawn(tabuleiro, Cor.WHITE, this));
+		placeNewPiece('e', 2, new Pawn(tabuleiro, Cor.WHITE, this));
+		placeNewPiece('f', 2, new Pawn(tabuleiro, Cor.WHITE, this));
+		placeNewPiece('g', 2, new Pawn(tabuleiro, Cor.WHITE, this));
+		placeNewPiece('h', 2, new Pawn(tabuleiro, Cor.WHITE, this));
 
 		placeNewPiece('a', 8, new Rook(tabuleiro, Cor.BLACK));
 		placeNewPiece('b', 8, new Knight(tabuleiro, Cor.BLACK));
@@ -244,13 +287,13 @@ public class PartidaXadrez {
 		placeNewPiece('f', 8, new Bishop(tabuleiro, Cor.BLACK));
 		placeNewPiece('h', 8, new Rook(tabuleiro, Cor.BLACK));
 		placeNewPiece('e', 8, new King(tabuleiro, Cor.BLACK, this));
-		placeNewPiece('a', 7, new Pawn(tabuleiro, Cor.BLACK));
-		placeNewPiece('b', 7, new Pawn(tabuleiro, Cor.BLACK));
-		placeNewPiece('c', 7, new Pawn(tabuleiro, Cor.BLACK));
-		placeNewPiece('d', 7, new Pawn(tabuleiro, Cor.BLACK));
-		placeNewPiece('e', 7, new Pawn(tabuleiro, Cor.BLACK));
-		placeNewPiece('f', 7, new Pawn(tabuleiro, Cor.BLACK));
-		placeNewPiece('g', 7, new Pawn(tabuleiro, Cor.BLACK));
-		placeNewPiece('h', 7, new Pawn(tabuleiro, Cor.BLACK));
+		placeNewPiece('a', 7, new Pawn(tabuleiro, Cor.BLACK, this));
+		placeNewPiece('b', 7, new Pawn(tabuleiro, Cor.BLACK, this));
+		placeNewPiece('c', 7, new Pawn(tabuleiro, Cor.BLACK, this));
+		placeNewPiece('d', 7, new Pawn(tabuleiro, Cor.BLACK, this));
+		placeNewPiece('e', 7, new Pawn(tabuleiro, Cor.BLACK, this));
+		placeNewPiece('f', 7, new Pawn(tabuleiro, Cor.BLACK, this));
+		placeNewPiece('g', 7, new Pawn(tabuleiro, Cor.BLACK, this));
+		placeNewPiece('h', 7, new Pawn(tabuleiro, Cor.BLACK, this));
 	}
 }

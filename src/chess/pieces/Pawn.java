@@ -3,12 +3,15 @@ package chess.pieces;
 import boardgame.Posicao;
 import boardgame.Tabuleiro;
 import chess.Cor;
+import chess.PartidaXadrez;
 import chess.PecaXadrez;
 
 public class Pawn extends PecaXadrez {
+	private PartidaXadrez px;
 
-	public Pawn(Tabuleiro board, Cor cor) {
+	public Pawn(Tabuleiro board, Cor cor, PartidaXadrez px) {
 		super(board, cor);
+		this.px = px;
 	}
 	
 	@Override
@@ -39,6 +42,17 @@ public class Pawn extends PecaXadrez {
 			p.setValues(position.getRow() - 1, position.getColumn() + 1);
 			if (getBoard().positionExists(p) && isThereOpponentPiece(p))
 				mat[p.getRow()][p.getColumn()] = true;
+			
+			//En Passant
+			if (position.getRow() == 3) {
+				Posicao left = new Posicao(position.getRow(), position.getColumn() - 1);
+				if (getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().peca(left) == px.getEnPassantVulnerable()) 
+					mat[left.getRow() - 1][left.getColumn()] = true;
+					
+				Posicao right = new Posicao(position.getRow(), position.getColumn() + 1);
+				if (getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().peca(right) == px.getEnPassantVulnerable()) 
+					mat[right.getRow() - 1][right.getColumn()] = true;
+			}
 		} 
 		else {
 			p.setValues(position.getRow() + 1, position.getColumn());
@@ -58,6 +72,17 @@ public class Pawn extends PecaXadrez {
 			p.setValues(position.getRow() + 1, position.getColumn() + 1);
 			if (getBoard().positionExists(p) && isThereOpponentPiece(p))
 				mat[p.getRow()][p.getColumn()] = true;
+			
+			//En Passant
+			if (position.getRow() == 4) {
+				Posicao left = new Posicao(position.getRow(), position.getColumn() - 1);
+				if (getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().peca(left) == px.getEnPassantVulnerable()) 
+					mat[left.getRow() + 1][left.getColumn()] = true;
+					
+				Posicao right = new Posicao(position.getRow(), position.getColumn() + 1);
+				if (getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().peca(right) == px.getEnPassantVulnerable()) 
+					mat[right.getRow() + 1][right.getColumn()] = true;
+			}
 		}
 
 		return mat;

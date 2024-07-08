@@ -1,5 +1,6 @@
 package chess;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ public class PartidaXadrez {
 	private Tabuleiro tabuleiro;
 	private boolean check, checkMate;
 	private PecaXadrez enPassantVulnerable;
+	private PecaXadrez promoted;
 
 	private List<Peca> piecesOnTheBoard = new ArrayList<>();
 	private List<Peca> capturedPieces = new ArrayList<>();
@@ -49,6 +51,10 @@ public class PartidaXadrez {
 
 	public PecaXadrez getEnPassantVulnerable() {
 		return enPassantVulnerable;
+	}
+
+	public PecaXadrez getPromoted() {
+		return promoted;
 	}
 
 	public PecaXadrez[][] getPecas() {
@@ -81,6 +87,16 @@ public class PartidaXadrez {
 
 		PecaXadrez movedPiece = (PecaXadrez) tabuleiro.peca(target);
 
+		// Promotion
+		promoted = null;
+		if (movedPiece instanceof Pawn) {
+			if ((movedPiece.getCor() == Cor.WHITE && target.getRow() == 0)
+					|| (movedPiece.getCor() == Cor.BLACK && target.getRow() == 7)) {
+				promoted = (PecaXadrez) tabuleiro.peca(target);
+				promoted = replacePromotedPiece("Q");
+			}
+		}
+
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
 
 		if (testCheckMate(opponent(currentPlayer)))
@@ -98,6 +114,34 @@ public class PartidaXadrez {
 		return (PecaXadrez) capturedPiece;
 	}
 
+	public PecaXadrez replacePromotedPiece(String type) {
+		if (promoted == null) 
+			throw new IllegalStateException("There is no piece to be promoted.");
+		if (!type.equals("B") && !type.equals("N") && !type.equals("R") && !type.equals("Q"))
+			throw new InvalidParameterException("Invalid Type for promotion.");
+		
+		Posicao pos = promoted.getPosicao().toPosition();
+		Peca p = tabuleiro.removerPeca(pos);
+		piecesOnTheBoard.remove(p);
+		
+		PecaXadrez newPiece = newPiece(type, promoted.getCor());
+		tabuleiro.colocarPeca(newPiece, pos);
+		piecesOnTheBoard.add(newPiece);
+		
+		return newPiece;
+	}
+	
+	private PecaXadrez newPiece(String type, Cor cor) {
+		if (type.equals("B"))
+			return new Bishop(tabuleiro, cor);
+		else if (type.equals("N"))
+			return new Knight(tabuleiro, cor);
+		else if (type.equals("Q"))
+			return new Queen(tabuleiro, cor);
+		else 
+			return new Rook(tabuleiro, cor);
+	}
+	
 	private Peca makeMove(Posicao source, Posicao target) {
 		PecaXadrez p = (PecaXadrez) tabuleiro.removerPeca(source);
 		p.increaseMoveCount();
@@ -173,7 +217,7 @@ public class PartidaXadrez {
 		// En Passant
 		if (p instanceof Pawn) {
 			if (source.getColumn() != target.getColumn() && capturedPiece == enPassantVulnerable) {
-				PecaXadrez pawn = (PecaXadrez)tabuleiro.removerPeca(target);
+				PecaXadrez pawn = (PecaXadrez) tabuleiro.removerPeca(target);
 				Posicao pawnPosition;
 				if (p.getCor() == Cor.WHITE)
 					pawnPosition = new Posicao(3, target.getColumn());
